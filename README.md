@@ -1,9 +1,9 @@
 **2D CFAR Implementation**
 
 **Implementation Steps**
- The 2D CFAR is implemented by sliding a window  through the Range Doppler Map(RDM) centering a Cell UnderTest (CUT). To avoid indexing errors, the loop starts and ends with a margin determined by the number of Training and Guard cells. For every CUT, the signal levels of the surrounding Training Cells are summed. Values are converted from logarithmic (dB) to linear(power) using the db2pow function before summation to ensure mathematical accuracy.The total power is averaged over the number of training cells used. The total number of Training cells was detemined by subtracting the total number of cells present inside the region enclosed by guard cells ( which included the CUT at the center) from total cells inside the entire window ( which included training cells guard cells )
+ The 2D CFAR is implemented by sliding a window  through the Range Doppler Map(RDM) centering a Cell UnderTest (CUT). The loop starts and ends with a margin determined by the number of Training and Guard cells. For every CUT, the signal levels of the surrounding Training Cells are summed. Values are converted from logarithmic (dB) to linear using the db2pow function before summation to ensure mathematical accuracy.The total power is averaged over the number of training cells used. 
 
-The total number of training cells ($N_{train}$) is determined by subtracting the inner Guard Window area from the Total Window area:
+The total number of training cells ($N_{train}$) used for averaging  is determined by subtracting the inner Guard Window area from the Total Window area:
 
 $$N_{train} = (2T_r+2G_r+1)(2T_d+2G_d+1) - (2G_r+1)(2G_d+1)$$
 
@@ -21,7 +21,7 @@ If the signal strength of the CUT is greater than the calculated threshold, it i
 
 **Suppression of Edge Cells**
 
-Since the sliding window requires a specific margin (Training + Guard cells) to operate, the cells at the edges of the RDM cannot be processed as a CUT. The initial loop only processes indices from Tr+Gr+1 to the inner boundaries. The thresholded block is smaller than the RDM.
+Since the sliding window requires a specific margin (Training + Guard cells) to operate, the cells at the edges of the RDM cannot be processed as a CUT. This makes thresholded block smaller than the RDM.
 
 To keep the map size same as it was before CFAR, a secondary pass is performed to equate all the non-thresholded cells to 0. Any cell that falls within the margins—where the row index i < (Tr+Gr+1)  or i >(Nr/2)-(Tr+Gr) or  the column index j < (Td+Gd+1) or j > Nd-(Td+Gd) is explicitly set to 0.This results in a binary map of the same dimensions as the original RDM, where only validated detections remain.
 
