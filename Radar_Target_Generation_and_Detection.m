@@ -14,7 +14,9 @@ clc;
 % *%TODO* :
 % define the target's initial position and velocity. Note : Velocity
 % remains contant
- 
+
+R=100;
+v=50;
 
 
 %% FMCW Waveform Generation
@@ -23,7 +25,13 @@ clc;
 %Design the FMCW waveform by giving the specs of each of its parameters.
 % Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
 % chirp using the requirements above.
+dres=1;
+c=3e8;
+Rmax=200
 
+B=c/(dres*2);
+Tchirp=(5.5*2*Rmax)/c;
+slope=B/Tchirp;
 
 %Operating carrier frequency of Radar 
 fc= 77e9;             %carrier freq
@@ -59,18 +67,19 @@ for i=1:length(t)
     
     % *%TODO* :
     %For each time stamp update the Range of the Target for constant velocity. 
-    
+    r_t(i)=R+(v*t(i));
+    td(i)=2*r_t(i)/c; % Round trip time of the signal
     % *%TODO* :
     %For each time sample we need update the transmitted and
     %received signal. 
-    Tx(i) = 
-    Rx (i)  =
+    Tx(i) = cos(2*pi*((fc*t(i))+((slope*t(i)*t(i))/2)));
+    Rx(i)  =cos(2*pi*(fc*(t(i)-td(i))+((slope*((t(i)-td(i))*(t(i)-td(i))))/2)));
     
     % *%TODO* :
     %Now by mixing the Transmit and Receive generate the beat signal
     %This is done by element wise matrix multiplication of Transmit and
     %Receiver Signal
-    Mix(i) = 
+    Mix(i) = Tx(i).*Rx(i);
     
 end
 
@@ -80,18 +89,21 @@ end
  % *%TODO* :
 %reshape the vector into Nr*Nd array. Nr and Nd here would also define the size of
 %Range and Doppler FFT respectively.
-
+Mix_mat=reshape(Mix,[Nr,Nd]);
  % *%TODO* :
 %run the FFT on the beat signal along the range bins dimension (Nr) and
 %normalize.
 
+     Y=fft(Mix_mat,Nr,1);
+
  % *%TODO* :
 % Take the absolute value of FFT output
+Y=abs(Y/Nr);
 
  % *%TODO* :
 % Output of FFT is double sided signal, but we are interested in only one side of the spectrum.
 % Hence we throw out half of the samples.
-
+Y=Y(1:Nr/2+1);
 
 %plotting the range
 figure ('Name','Range from First FFT')
@@ -99,9 +111,9 @@ subplot(2,1,1)
 
  % *%TODO* :
  % plot FFT output 
+plot(Y);
+axis ([0 200 0 0.5]);
 
- 
-axis ([0 200 0 1]);
 
 
 
@@ -140,13 +152,17 @@ figure,surf(doppler_axis,range_axis,RDM);
 
 % *%TODO* :
 %Select the number of Training Cells in both the dimensions.
+Tx=2;
+Ty=1
 
 % *%TODO* :
 %Select the number of Guard Cells in both dimensions around the Cell under 
 %test (CUT) for accurate estimation
-
+Gx=1;
+Gy=1;
 % *%TODO* :
 % offset the threshold by SNR value in dB
+
 
 % *%TODO* :
 %Create a vector to store noise_level for each iteration on training cells
