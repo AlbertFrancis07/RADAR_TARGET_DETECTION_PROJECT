@@ -4,6 +4,7 @@
  The 2D CFAR is implemented by sliding a window  through the Range Doppler Map(RDM) centering a Cell UnderTest (CUT). To avoid indexing errors, the loop starts and ends with a margin determined by the number of Training and Guard cells. For every CUT, the signal levels of the surrounding Training Cells are summed. Values are converted from logarithmic (dB) to linear(power) using the db2pow function before summation to ensure mathematical accuracy.The total power is averaged over the number of training cells used. The total number of Training cells was detemined by subtracting the total number of cells present inside the region enclosed by guard cells ( which included the CUT at the center) from total cells inside the entire window ( which included training cells guard cells )
 
 The total number of training cells ($N_{train}$) is determined by subtracting the inner Guard Window area from the Total Window area:
+
 $$N_{train} = (2T_r+2G_r+1)(2T_d+2G_d+1) - (2G_r+1)(2G_d+1)$$
 
 **Selection of Training, Guard Cells, and Offset**
