@@ -15,8 +15,8 @@ clc;
 % define the target's initial position and velocity. Note : Velocity
 % remains contant
 
-R=60;
-v=50;
+R=100;
+v=10;
 
 
 %% FMCW Waveform Generation
@@ -152,14 +152,14 @@ figure,surf(doppler_axis,range_axis,RDM);
 
 % *%TODO* :
 %Select the number of Training Cells in both the dimensions.
-Tr=10;
-Td=8;
+Tr=6;
+Td=3;
 
 % *%TODO* :
 %Select the number of Guard Cells in both dimensions around the Cell under 
 %test (CUT) for accurate estimation
-Gr=4;
-Gd=4;
+Gr=2;
+Gd=2;
 % *%TODO* :
 % offset the threshold by SNR value in dB
 offset = 12;
@@ -224,7 +224,7 @@ noise_level = zeros(1,1);
            end
        end
    end
- 
+
 
 
 
